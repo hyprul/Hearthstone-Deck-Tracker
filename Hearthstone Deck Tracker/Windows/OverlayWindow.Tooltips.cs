@@ -60,7 +60,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 			var pos = User32.GetMousePos();
 			var relativePlayerDeckPos = ViewBoxPlayer.PointFromScreen(new Point(pos.X, pos.Y));
 			var relativeOpponentDeckPos = ViewBoxOpponent.PointFromScreen(new Point(pos.X, pos.Y));
-			var relativeSecretsPos = StackPanelSecrets.PointFromScreen(new Point(pos.X, pos.Y));
+			var relativeSecretsPos = SecretsListContainer.PointFromScreen(new Point(pos.X, pos.Y));
 			var relativeCardMark = _cardMarks.Select(x => new {Label = x, Pos = x.PointFromScreen(new Point(pos.X, pos.Y))});
 			var visibility = (Config.Instance.OverlayCardToolTips && !Config.Instance.OverlaySecretToolTipsOnly)
 								 ? Visible : Hidden;
@@ -134,28 +134,28 @@ namespace Hearthstone_Deck_Tracker.Windows
 
 				//ToolTipCard.Visibility = visibility;
 			}
-			else if(StackPanelSecrets.Visibility == Visible
-					&& PointInsideControl(relativeSecretsPos, StackPanelSecrets.ActualWidth, StackPanelSecrets.ActualHeight))
-			{
-				//card size = card list height / amount of cards
-				var cardSize = StackPanelSecrets.ActualHeight / StackPanelSecrets.Children.Count;
-				var cardIndex = (int)(relativeSecretsPos.Y / cardSize);
-				if(cardIndex < 0 || cardIndex >= StackPanelSecrets.Children.Count)
-					return;
+			//else if(StackPanelSecrets.Visibility == Visible
+			//		&& PointInsideControl(relativeSecretsPos, StackPanelSecrets.ActualWidth, StackPanelSecrets.ActualHeight))
+			//{
+			//	//card size = card list height / amount of cards
+			//	var cardSize = StackPanelSecrets.ActualHeight / StackPanelSecrets.Children.Count;
+			//	var cardIndex = (int)(relativeSecretsPos.Y / cardSize);
+			//	if(cardIndex < 0 || cardIndex >= StackPanelSecrets.Children.Count)
+			//		return;
 
-				ToolTipCard.SetValue(DataContextProperty, StackPanelSecrets.Children[cardIndex].GetValue(DataContextProperty));
+			//	ToolTipCard.SetValue(DataContextProperty, StackPanelSecrets.Children[cardIndex].GetValue(DataContextProperty));
 
-				//offset is affected by scaling
-				var topOffset = Canvas.GetTop(StackPanelSecrets) + cardIndex * cardSize * Config.Instance.OverlayOpponentScaling / 100;
+			//	//offset is affected by scaling
+			//	var topOffset = Canvas.GetTop(StackPanelSecrets) + cardIndex * cardSize * Config.Instance.OverlayOpponentScaling / 100;
 
-				//prevent tooltip from going outside of the overlay
-				if(topOffset + ToolTipCard.ActualHeight > Height)
-					topOffset = Height - ToolTipCard.ActualHeight;
+			//	//prevent tooltip from going outside of the overlay
+			//	if(topOffset + ToolTipCard.ActualHeight > Height)
+			//		topOffset = Height - ToolTipCard.ActualHeight;
 
-				SetTooltipPosition(topOffset, StackPanelSecrets);
+			//	SetTooltipPosition(topOffset, StackPanelSecrets);
 
-				ToolTipCard.Visibility = Config.Instance.OverlaySecretToolTipsOnly ? Visible : visibility;
-			}
+			//	ToolTipCard.Visibility = Config.Instance.OverlaySecretToolTipsOnly ? Visible : visibility;
+			//}
 			else
 			{
 				ToolTipCard.Visibility = Hidden;
@@ -179,26 +179,6 @@ namespace Hearthstone_Deck_Tracker.Windows
 			{
 				HideAdditionalToolTips();
 				_lastToolTipCardId = string.Empty;
-			}
-
-
-			if(!Config.Instance.ForceMouseHook)
-			{
-				if(Config.Instance.ExtraFeatures)
-				{
-					var relativePos = PointFromScreen(new Point(pos.X, pos.Y));
-					if((StackPanelSecrets.IsVisible
-						&& (PointInsideControl(StackPanelSecrets.PointFromScreen(new Point(pos.X, pos.Y)), StackPanelSecrets.ActualWidth,
-											   StackPanelSecrets.ActualHeight, new Thickness(20))) || relativePos.X < 170 && relativePos.Y > Height - 120))
-					{
-						if(_mouseInput == null)
-							HookMouse();
-					}
-					else if(_mouseInput != null && !((_isFriendsListOpen.HasValue && _isFriendsListOpen.Value) || Reflection.IsFriendsListVisible()))
-						UnHookMouse();
-				}
-				else if(_mouseInput != null)
-					UnHookMouse();
 			}
 
 			if(!Config.Instance.AlwaysShowGoldProgress)

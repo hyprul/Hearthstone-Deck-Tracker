@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using HearthDb.Enums;
 using HearthMirror;
 using Hearthstone_Deck_Tracker.Controls.Overlay;
-using Hearthstone_Deck_Tracker.Enums;
-using Hearthstone_Deck_Tracker.Hearthstone;
 using Hearthstone_Deck_Tracker.Utility.Logging;
+using HearthSim.Core.Hearthstone.Secrets;
 using HearthSim.Util;
 
 namespace Hearthstone_Deck_Tracker.Windows
@@ -82,7 +81,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 
 			if(_selectedUiElement is Panel panel)
 			{
-				if(panel.Equals(StackPanelSecrets))
+				if(panel.Equals(SecretsListContainer))
 				{
 					if(!_resizeElement)
 					{
@@ -210,11 +209,11 @@ namespace Hearthstone_Deck_Tracker.Windows
 			if (_uiMovable)
 			{
 				HookMouse();
-				if (StackPanelSecrets.Visibility != Visibility.Visible)
+				if (SecretsList.Visibility != Visibility.Visible)
 				{
 					_secretsTempVisible = true;
-					//var secrets = CardIds.Secrets.Mage.All.Select(Database.GetCardFromId).ToList();
-					//ShowSecrets(secrets, true);
+					var secrets = SecretList.Get(CardClass.MAGE).Select(x => new HearthSim.Core.Hearthstone.Card(x));
+					UpdateSecrets(secrets, true);
 					//need to wait for panel to actually show up
 					await Task.Delay(50);
 				}
@@ -253,9 +252,9 @@ namespace Hearthstone_Deck_Tracker.Windows
 							}
 							movableElement.Value.Width = elementSize.Width > 0 ? elementSize.Width * Config.Instance.OverlayOpponentScaling / 100 : 0;
 						}
-						else if(movableElement.Key == StackPanelSecrets)
+						else if(movableElement.Key == SecretsListContainer)
 						{
-							movableElement.Value.Height = StackPanelSecrets.ActualHeight > 0 ? StackPanelSecrets.ActualHeight : 0;
+							movableElement.Value.Height = SecretsListContainer.ActualHeight > 0 ? SecretsListContainer.ActualHeight : 0;
 							movableElement.Value.Width = elementSize.Width > 0 ? elementSize.Width : 0;
 						}
 						else
@@ -275,8 +274,6 @@ namespace Hearthstone_Deck_Tracker.Windows
 			}
 			else
 			{
-				if (!(Config.Instance.ExtraFeatures && Config.Instance.ForceMouseHook))
-					UnHookMouse();
 				if (_secretsTempVisible)
 					HideSecrets();
 				if (_game.IsInMenu)

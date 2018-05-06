@@ -115,7 +115,13 @@ namespace Hearthstone_Deck_Tracker
 					UpdatePlayerCards();
 					UpdateOpponentCards();
 					Helper.UpdateEverything(Manager.Game);
+
+					if(t.Value == (int)GameTag.ZONE || t.PreviousValue == (int)GameTag.ZONE)
+						Overlay.UpdateSecrets(args.State.OpposingPlayer.Secrets);
 				}
+			Manager.Game.SolvedSecretsChanged += () =>
+			{
+				Overlay.UpdateSecrets(Hearthstone.CurrentGame.OpposingPlayer.Secrets.ToList());
 			};
 			Manager.Game.GameCreated += args =>
 			{
@@ -191,7 +197,6 @@ namespace Hearthstone_Deck_Tracker
 			Manager.UpdateLogConfig().Forget();
 			UITheme.InitializeTheme();
 			ResourceMonitor.Run();
-			//Game.SecretsManager.OnSecretsChanged += cards => Overlay.ShowSecrets(cards);
 			MainWindow = new MainWindow();
 			MainWindow.LoadConfigSettings();
 			MainWindow.Show();

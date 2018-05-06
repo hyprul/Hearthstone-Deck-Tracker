@@ -87,7 +87,9 @@
                 </StackPanel>
             </Border>
 
-            <StackPanel Name="StackPanelSecrets" Width="auto" Height="auto" Visibility="Collapsed" />
+            <Grid Name="SecretsListContainer">
+                <ui:AnimatedCardList x:Name="SecretsList"/>
+            </Grid>
 
             <controls:CardMarker x:Name="Marks0" Width="36" Height="34" />
             <controls:CardMarker x:Name="Marks1" Width="36" Height="34" />

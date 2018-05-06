@@ -311,23 +311,14 @@ namespace Hearthstone_Deck_Tracker
 		[DefaultValue(false)]
 		public bool ExportIncludeVersion = false;
 
-		[DefaultValue(false)]
-		public bool ExtraFeatures = false;
-
 		[DefaultValue(true)]
 		public bool ExtraFeaturesFriendslist = true;
-
-		[DefaultValue(false)]
-		public bool ExtraFeaturesSecrets = false;
 
 		[DefaultValue(true)]
 		public bool FlashHsOnTurnStart = true;
 
 		[DefaultValue(false)]
 		public bool FlashHsOnFriendlyChallenge = false;
-
-		[DefaultValue(false)]
-		public bool ForceMouseHook = false;
 
 		[DefaultValue(0.075)]
 		public double GoldProgessX = 0.76;

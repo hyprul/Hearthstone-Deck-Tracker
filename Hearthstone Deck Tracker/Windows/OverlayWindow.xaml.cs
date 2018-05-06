@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using Hearthstone_Deck_Tracker.Annotations;
 using Hearthstone_Deck_Tracker.Controls;
 using HearthSim.Core.Hearthstone;
+using HearthSim.Core.Hearthstone.Secrets;
 using HearthSim.Util;
 using static System.Windows.Visibility;
 using Card = Hearthstone_Deck_Tracker.Hearthstone.Card;
@@ -55,8 +56,6 @@ namespace Hearthstone_Deck_Tracker.Windows
 			_game = game;
 			InitializeComponent();
 
-			if(Config.Instance.ExtraFeatures && Config.Instance.ForceMouseHook)
-				HookMouse();
 			ShowInTaskbar = Config.Instance.ShowInTaskbar;
 			if(Config.Instance.VisibleOverlay)
 				Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#4C0000FF");
@@ -147,27 +146,27 @@ namespace Hearthstone_Deck_Tracker.Windows
 				LblPlayerTurnTime.Visibility =
 				LblOpponentTurnTime.Visibility = LblTurnTime.Visibility = Config.Instance.HideTimers ? Hidden : Visible;
 
-		public void ShowSecrets(List<Card> secrets, bool force = false)
+		public void UpdateSecrets(IList<Secret> secrets, bool force = false)
 		{
-			//if(Config.Instance.HideSecrets && !force)
-			//	return;
-
-			//StackPanelSecrets.Children.Clear();
-
-			//foreach(var secret in secrets)
-			//{
-			//	if(secret.Count <= 0 && Config.Instance.RemoveSecretsFromList)
-			//		continue;
-			//	var cardObj = new Controls.Card();
-			//	cardObj.SetValue(DataContextProperty, secret);
-			//	StackPanelSecrets.Children.Add(cardObj);
-			//}
-
-			//StackPanelSecrets.Visibility = Visible;
+			if(Config.Instance.HideSecrets && !force)
+				return;
+			var remaining = secrets.SelectMany(x => x.RemainingSecrets).GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+			var cards = secrets.SelectMany(x => x.PossibleSecrets).GroupBy(x => x)
+				.Select(x => new HearthSim.Core.Hearthstone.Card(x.Key, remaining.TryGetValue(x.Key, out var count) ? count : -1));
+			UpdateSecrets(cards, force);
 		}
 
-		public void HideSecrets() => StackPanelSecrets.Visibility = Collapsed;
-		public void UnhideSecrects() => StackPanelSecrets.Visibility = Visible;
+		public void UpdateSecrets(IEnumerable<HearthSim.Core.Hearthstone.Card> secrets, bool force = false)
+		{
+			if(Config.Instance.HideSecrets && !force)
+				return;
+			SecretsList.Cards = secrets;
+			SecretsList.Visibility = Visible;
+		}
+
+
+		public void HideSecrets() => SecretsList.Visibility = Collapsed;
+		public void UnhideSecrects() => SecretsList.Visibility = Visible;
 
 		private void Window_Closing(object sender, CancelEventArgs e)
 		{

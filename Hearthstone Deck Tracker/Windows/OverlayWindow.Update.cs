@@ -95,7 +95,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 
 			StackPanelPlayer.Opacity = Config.Instance.PlayerOpacity / 100;
 			StackPanelOpponent.Opacity = Config.Instance.OpponentOpacity / 100;
-			StackPanelSecrets.Opacity = Config.Instance.SecretsOpacity / 100;
+			SecretsList.Opacity = Config.Instance.SecretsOpacity / 100;
 			Opacity = Config.Instance.OverlayOpacity / 100;
 
 			if (!_playerCardsHidden)
@@ -286,7 +286,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 																  Config.Instance.OverlayPlayerScaling / 100);
 			StackPanelOpponent.RenderTransform = new ScaleTransform(Config.Instance.OverlayOpponentScaling / 100,
 																	Config.Instance.OverlayOpponentScaling / 100);
-			StackPanelSecrets.RenderTransform = new ScaleTransform(Config.Instance.SecretsPanelScaling, Config.Instance.SecretsPanelScaling);
+			SecretsListContainer.RenderTransform = new ScaleTransform(Config.Instance.SecretsPanelScaling, Config.Instance.SecretsPanelScaling);
 		}
 
 		private void UpdateElementPositions()
@@ -295,8 +295,8 @@ namespace Hearthstone_Deck_Tracker.Windows
 			Canvas.SetLeft(BorderStackPanelPlayer, Width * Config.Instance.PlayerDeckLeft / 100 - StackPanelPlayer.ActualWidth * Config.Instance.OverlayPlayerScaling / 100);
 			Canvas.SetTop(BorderStackPanelOpponent, Height * Config.Instance.OpponentDeckTop / 100);
 			Canvas.SetLeft(BorderStackPanelOpponent, Width * Config.Instance.OpponentDeckLeft / 100);
-			Canvas.SetTop(StackPanelSecrets, Height * Config.Instance.SecretsTop / 100);
-			Canvas.SetLeft(StackPanelSecrets, Width * Config.Instance.SecretsLeft / 100);
+			Canvas.SetTop(SecretsListContainer, Height * Config.Instance.SecretsTop / 100);
+			Canvas.SetLeft(SecretsListContainer, Width * Config.Instance.SecretsLeft / 100);
 			Canvas.SetTop(LblTurnTime, Height * Config.Instance.TimersVerticalPosition / 100 - 5);
 			Canvas.SetLeft(LblTurnTime, Width * Config.Instance.TimersHorizontalPosition / 100);
 			Canvas.SetTop(LblOpponentTurnTime, Height * Config.Instance.TimersVerticalPosition / 100 - Config.Instance.TimersVerticalSpacing);

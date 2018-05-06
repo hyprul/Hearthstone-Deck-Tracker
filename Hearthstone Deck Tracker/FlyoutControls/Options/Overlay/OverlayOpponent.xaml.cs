@@ -306,7 +306,7 @@ namespace Hearthstone_Deck_Tracker.FlyoutControls.Options.Overlay
 				return;
 			Config.Instance.HideSecrets = false;
 			SaveConfig(false);
-			//Core.Overlay.ShowSecrets();
+			Core.Overlay.UnhideSecrects();
 		}
 	}
 }
