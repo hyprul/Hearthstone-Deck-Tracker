@@ -110,15 +110,19 @@ namespace Hearthstone_Deck_Tracker
 			};
 			Manager.Game.GameStateEvents.GameStateChanged += args =>
 			{
-				if(args.Modifier is TagChange t && t.Tag == GameTag.ZONE)
+				if(args.Modifier is TagChange t)
 				{
-					UpdatePlayerCards();
-					UpdateOpponentCards();
-					Helper.UpdateEverything(Manager.Game);
-
-					if(t.Value == (int)GameTag.ZONE || t.PreviousValue == (int)GameTag.ZONE)
-						Overlay.UpdateSecrets(args.State.OpposingPlayer.Secrets);
+					if(t.Tag == GameTag.ZONE)
+					{
+						UpdatePlayerCards();
+						UpdateOpponentCards();
+						Helper.UpdateEverything(Manager.Game);
+					}
+					else if(t.Tag == GameTag.ZONE_POSITION && (Overlay.IsVisible || Windows.CapturableOverlay != null))
+						Overlay.Update(false);
 				}
+
+			};
 			Manager.Game.SolvedSecretsChanged += () =>
 			{
 				Overlay.UpdateSecrets(Hearthstone.CurrentGame.OpposingPlayer.Secrets.ToList());
